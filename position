@@ -1,0 +1,5 @@
+PREFIX rc: <http://example.org/>
+select (count(?downstream) as ?position) ?downstream1 where { 
+	rc:service1 rc:calls+ ?downstream .
+    ?downstream rc:calls* ?downstream1 .
+} group by ?downstream1
