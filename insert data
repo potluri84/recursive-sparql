@@ -1,0 +1,23 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rc: <http://example.org/>
+PREFIX : <http://example.org>
+
+INSERT DATA { rc:service1 rdf:type rc:service; rc:id '123'.
+rc:service2 rdf:type rc:service; rc:id '123'.
+rc:service3 rdf:type rc:service; rc:id '123'.
+rc:service4 rdf:type rc:service; rc:id '124'.
+rc:service5 rdf:type rc:service; rc:id '125'.
+rc:service6 rdf:type rc:service; rc:id '125'.
+rc:service7 rdf:type rc:service; rc:id '126'.
+rc:service8 rdf:type rc:service; rc:id '126'.
+rc:service9 rdf:type rc:service; rc:id '127'.
+
+rc:service1 rc:calls rc:service2 .
+    rc:service1 rc:calls rc:service3 .
+    rc:service2 rc:calls rc:service4 .
+    rc:service2 rc:calls rc:service5 .
+    rc:service1 rc:calls rc:service6 .
+	rc:service4 rc:calls rc:service7 .
+    rc:service4 rc:calls rc:service8 .
+    rc:service4 rc:calls rc:service9
+}
