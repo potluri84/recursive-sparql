@@ -1,0 +1,43 @@
+PREFIX rc: <http://example.org/>
+select ?id ?idPath ?pathInfo
+where {
+    {
+        select ?id ?downId ?downId1 ?downId2
+        (GROUP_CONCAT(?paths;
+                separator = "|") AS ?pathInfo)
+        where {
+            {
+                ?subject rc:calls ?downstream .
+                ?subject rc:id ?id.
+                ?downstream rc:id ?downId.
+                BIND(CONCAT(str(?subject),'->',str(?downstream)) as ?paths)
+            }
+            UNION {
+                ?subject rc:calls ?downstream .
+                ?subject rc:id ?id.
+                ?downstream rc:id ?downId.
+                ?downstream rc:calls ?downstream1 .
+                ?downstream1 rc:id ?downId1.
+                BIND(CONCAT(str(?subject),'->',str(?downstream),'->',str(?downstream1)) as ?paths)
+            } UNION {
+                ?subject rc:calls ?downstream .
+                ?subject rc:id ?id.
+                ?downstream rc:id ?downId.
+                ?downstream rc:calls ?downstream1 .
+                ?downstream1 rc:calls ?downstream2 .
+                ?downstream1 rc:id ?downId1.
+                ?downstream2 rc:id ?downId2.
+                BIND(CONCAT(str(?subject),'->',str(?downstream),'->',str(?downstream1),'->',str(?downstream2)) as ?paths)
+            }
+            VALUES ?subject {
+                rc:service1
+            }
+        } 
+        group by ?id ?downId ?downId1 ?downId2 #?paths
+    }
+    BIND ( COALESCE(?id, "NONE") As ?d1)
+    BIND ( COALESCE(?downId, "NONE") As ?d2)
+    BIND ( COALESCE(?downId1, "NONE") As ?d3)
+    BIND ( COALESCE(?downId2, "NONE") As ?d4)
+    BIND(CONCAT(str(?d1),'->',str(?d2),'->',str(?d3),'->',str(?d4)) as ?idPath)
+}
