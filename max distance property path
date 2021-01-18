@@ -1,0 +1,12 @@
+PREFIX rc: <http://example.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+select (max(?distance) as ?max)
+{
+    select ?s ?o (count(?mid) as ?distance) {
+        ?s rc:calls* ?mid .
+        ?mid rc:calls* ?o .
+        ?s rdf:type rc:service .
+        ?s rc:id '123'.
+    }
+    group by ?s ?o
+}
